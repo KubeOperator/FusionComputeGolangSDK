@@ -1,4 +1,4 @@
-package cluster
+package storage
 
 import (
 	"encoding/json"
@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	siteMask   = "<site_uri>"
-	clusterUrl = "<site_uri>/clusters"
+	siteMask     = "<site_uri>"
+	datastoreUrl = "<site_uri>/datastores"
 )
 
 type Interface interface {
-	List() ([]Cluster, error)
+	ListDataStore() ([]Datastore, error)
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Interface {
@@ -25,26 +25,25 @@ type manager struct {
 	siteUri string
 }
 
-func (m *manager) List() ([]Cluster, error) {
-	var clusters []Cluster
+func (m *manager) ListDataStore() ([]Datastore, error) {
+	var adapters []Datastore
 	api, err := m.client.GetApiClient()
 	if err != nil {
 		return nil, err
 	}
-	resp, err := api.R().Get(strings.Replace(clusterUrl, siteMask, m.siteUri, -1))
+	resp, err := api.R().Get(strings.Replace(datastoreUrl, siteMask, m.siteUri, -1))
 	if err != nil {
 		return nil, err
 	}
 	if resp.IsSuccess() {
-		var listClusterResponse ListClusterResponse
-		err := json.Unmarshal(resp.Body(), &listClusterResponse)
+		var listAdapterResponse ListDataStoreResponse
+		err := json.Unmarshal(resp.Body(), &listAdapterResponse)
 		if err != nil {
 			return nil, err
 		}
-		clusters = listClusterResponse.Clusters
+		adapters = listAdapterResponse.Datastores
 	} else {
 		return nil, common.FormatHttpError(resp)
 	}
-	return clusters, nil
-
+	return adapters, nil
 }

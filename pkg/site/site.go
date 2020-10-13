@@ -10,11 +10,11 @@ const (
 	siteUrl = "/service/sites"
 )
 
-type Manager interface {
-	List() ([]Site, error)
+type Interface interface {
+	ListSite() ([]Site, error)
 }
 
-func NewManager(client client.FusionComputeClient) Manager {
+func NewManager(client client.FusionComputeClient) Interface {
 	return &manager{client: client}
 }
 
@@ -22,7 +22,7 @@ type manager struct {
 	client client.FusionComputeClient
 }
 
-func (m *manager) List() ([]Site, error) {
+func (m *manager) ListSite() ([]Site, error) {
 	var sites []Site
 	api, err := m.client.GetApiClient()
 	if err != nil {

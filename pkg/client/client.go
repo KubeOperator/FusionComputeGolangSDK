@@ -74,7 +74,15 @@ func (f *fusionComputeClient) GetApiClient() (*resty.Client, error) {
 	if f.GetSession() == "" {
 		return nil, errors.New("no session exists,please login and try it again")
 	}
+	f.setDefaultHeader(r)
 	r.SetHeader(XAuthToken, string(f.GetSession())).
 		SetHostURL(f.host)
 	return r, nil
+}
+
+func (f *fusionComputeClient) setDefaultHeader(client *resty.Client) {
+	client.SetHeaders(map[string]string{
+		"Accept":          "application/json;version=v8.0;charset=UTF-8;",
+		"Accept-Language": "zh_CN:1.0",
+	})
 }

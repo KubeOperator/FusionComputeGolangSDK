@@ -1,8 +1,9 @@
-package site
+package storage
 
 import (
 	"fmt"
 	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/client"
+	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/site"
 	"log"
 	"testing"
 )
@@ -14,10 +15,18 @@ func TestManager_List(t *testing.T) {
 		log.Fatal(err)
 	}
 	defer c.DisConnect()
-	m := NewManager(c)
-	ss, err := m.ListSite()
+
+	sm := site.NewManager(c)
+	ss, err := sm.List()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(ss)
+	for _, s := range ss {
+		cm := NewManager(c, s.Uri)
+		cs, err := cm.ListDataStore()
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(cs)
+	}
 }

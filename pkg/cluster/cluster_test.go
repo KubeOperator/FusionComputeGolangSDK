@@ -9,7 +9,7 @@ import (
 )
 
 func TestManager_List(t *testing.T) {
-	c := client.NewFusionComputeClient("https://100.199.16.208:7443", "kubeoperator", "Calong@2015")
+	c := client.NewFusionComputeClient("https://100.199.16.208:7443", "fit2cloud", "Huawei@1234")
 	err := c.Connect()
 	if err != nil {
 		log.Fatal(err)
