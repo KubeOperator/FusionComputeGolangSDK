@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/client"
 	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/common"
+	"path"
 	"strings"
 )
 
@@ -14,6 +15,7 @@ const (
 
 type Manager interface {
 	ListVm(isTemplate bool) ([]Vm, error)
+	CloneVm(templateUri string, request CloneVmRequest) error
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Manager {
@@ -23,6 +25,27 @@ func NewManager(client client.FusionComputeClient, siteUri string) Manager {
 type manager struct {
 	client  client.FusionComputeClient
 	siteUri string
+}
+
+func (m *manager) CloneVm(templateUri string, request CloneVmRequest) error {
+	api, err := m.client.GetApiClient()
+	if err != nil {
+		return err
+	}
+	resp, err := api.R().SetBody(&request).Post(path.Join(templateUri, "action", "clone"))
+	if err != nil {
+		return err
+	}
+	if resp.IsSuccess() {
+		var cloneVmResponse CloneVmResponse
+		err := json.Unmarshal(resp.Body(), &cloneVmResponse)
+		if err != nil {
+			return err
+		}
+	} else {
+		return common.FormatHttpError(resp)
+	}
+	return nil
 }
 
 func (m *manager) ListVm(isTemplate bool) ([]Vm, error) {
