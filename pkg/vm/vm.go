@@ -15,7 +15,8 @@ const (
 
 type Manager interface {
 	ListVm(isTemplate bool) ([]Vm, error)
-	CloneVm(templateUri string, request CloneVmRequest) error
+	CloneVm(templateUri string, request CloneVmRequest) (string, error)
+	CreateVmCustomization(vmUri string) error
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Manager {
@@ -27,25 +28,27 @@ type manager struct {
 	siteUri string
 }
 
-func (m *manager) CloneVm(templateUri string, request CloneVmRequest) error {
+// return task urn
+func (m *manager) CloneVm(templateUri string, request CloneVmRequest) (string, error) {
+	var cloneVmResponse CloneVmResponse
 	api, err := m.client.GetApiClient()
 	if err != nil {
-		return err
+		return "", err
 	}
 	resp, err := api.R().SetBody(&request).Post(path.Join(templateUri, "action", "clone"))
 	if err != nil {
-		return err
+		return "", err
 	}
 	if resp.IsSuccess() {
-		var cloneVmResponse CloneVmResponse
 		err := json.Unmarshal(resp.Body(), &cloneVmResponse)
 		if err != nil {
-			return err
+			return "", err
 		}
+
 	} else {
-		return common.FormatHttpError(resp)
+		return "", common.FormatHttpError(resp)
 	}
-	return nil
+	return cloneVmResponse.TaskUrn, nil
 }
 
 func (m *manager) ListVm(isTemplate bool) ([]Vm, error) {
@@ -74,4 +77,8 @@ func (m *manager) ListVm(isTemplate bool) ([]Vm, error) {
 		return nil, common.FormatHttpError(resp)
 	}
 	return vms, nil
+}
+
+func (m *manager) CreateVmCustomization(vmUri string) error {
+
 }

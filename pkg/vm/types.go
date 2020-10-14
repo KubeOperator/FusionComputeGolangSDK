@@ -1,33 +1,51 @@
 package vm
 
 type Vm struct {
-	Urn               string `json:"urn,omitempty,omitempty"`
-	Uri               string `json:"uri,omitempty"`
-	Uuid              string `json:"uuid,omitempty"`
-	Name              string `json:"name,omitempty"`
-	Arch              string `json:"arch,omitempty"`
-	Description       string `json:"description,omitempty"`
-	Group             string `json:"group,omitempty"`
-	Location          string `json:"location,omitempty"`
-	LocationName      string `json:"locationName,omitempty"`
-	HostUrn           string `json:"hostUrn,omitempty"`
-	Status            string `json:"status,omitempty"`
-	PvDriverStatus    string `json:"pvDriverStatus,omitempty"`
-	ToolInstallStatus string `json:"toolInstallStatus,omitempty"`
-	CdRomStatus       string `json:"cdRomStatus,omitempty"`
-	IsTemplate        bool   `json:"isTemplate,omitempty"`
-	IsLinkClone       bool   `json:"isLinkClone,omitempty"`
-	IsBindingHost     bool   `json:"isBindingHost,omitempty"`
-	CreateTime        string `json:"createTime,omitempty"`
-	ToolsVersion      string `json:"toolsVersion,omitempty"`
-	HostName          string `json:"hostName,omitempty"`
-	ClusterName       string `json:"clusterName,omitempty"`
-	HugePage          string `json:"hugePage,omitempty"`
-	Idle              int    `json:"idle,omitempty"`
-	VmType            int    `json:"vmType,omitempty"`
-	DrStatus          int    `json:"drStatus,omitempty"`
-	RpoStatus         int    `json:"rpoStatus,omitempty"`
-	InitSyncStatus    int    `json:"initSyncStatus,omitempty"`
+	Urn               string        `json:"urn,omitempty,omitempty"`
+	Uri               string        `json:"uri,omitempty"`
+	Uuid              string        `json:"uuid,omitempty"`
+	Name              string        `json:"name,omitempty"`
+	Arch              string        `json:"arch,omitempty"`
+	Description       string        `json:"description,omitempty"`
+	Group             string        `json:"group,omitempty"`
+	Location          string        `json:"location,omitempty"`
+	LocationName      string        `json:"locationName,omitempty"`
+	HostUrn           string        `json:"hostUrn,omitempty"`
+	Status            string        `json:"status,omitempty"`
+	PvDriverStatus    string        `json:"pvDriverStatus,omitempty"`
+	ToolInstallStatus string        `json:"toolInstallStatus,omitempty"`
+	CdRomStatus       string        `json:"cdRomStatus,omitempty"`
+	IsTemplate        bool          `json:"isTemplate,omitempty"`
+	IsLinkClone       bool          `json:"isLinkClone,omitempty"`
+	IsBindingHost     bool          `json:"isBindingHost,omitempty"`
+	CreateTime        string        `json:"createTime,omitempty"`
+	ToolsVersion      string        `json:"toolsVersion,omitempty"`
+	HostName          string        `json:"hostName,omitempty"`
+	ClusterName       string        `json:"clusterName,omitempty"`
+	HugePage          string        `json:"hugePage,omitempty"`
+	Idle              int           `json:"idle,omitempty"`
+	VmType            int           `json:"vmType,omitempty"`
+	DrStatus          int           `json:"drStatus,omitempty"`
+	RpoStatus         int           `json:"rpoStatus,omitempty"`
+	InitSyncStatus    int           `json:"initSyncStatus,omitempty"`
+	VmCustomization   Customization `json:"vmCustomization"`
+}
+
+type Customization struct {
+	OsType             string             `json:"osType"`
+	Hostname           string             `json:"hostname"`
+	IsUpdateVmPassword string             `json:"isUpdateVmPassword"`
+	Password           string             `json:"password"`
+	NicSpecification   []NicSpecification `json:"nicSpecification"`
+}
+
+type NicSpecification struct {
+	SequenceNum int    `json:"sequenceNum"`
+	Ip          string `json:"ip"`
+	Netmask     string `json:"netmask"`
+	Gateway     string `json:"gateway"`
+	Setdns      string `json:"setdns"`
+	Adddns      string `json:"adddns"`
 }
 
 type ListVmResponse struct {
