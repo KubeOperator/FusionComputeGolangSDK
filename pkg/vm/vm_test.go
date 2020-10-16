@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/client"
 	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/site"
+	"github.com/KubeOperator/FusionComputeGolangSDK/pkg/task"
 	"log"
 	"testing"
+	"time"
 )
 
 func TestManager_List(t *testing.T) {
@@ -39,7 +41,7 @@ func TestManager_CloneVm(t *testing.T) {
 	}
 	defer c.DisConnect()
 	m := NewManager(c, "/service/sites/43BC08E8")
-	task, err := m.CloneVm("/service/sites/43BC08E8/vms/i-00000034", CloneVmRequest{
+	ts, err := m.CloneVm("/service/sites/43BC08E8/vms/i-00000034", CloneVmRequest{
 		Name:          "test-1",
 		Description:   "test create vm",
 		Location:      "urn:sites:43BC08E8:clusters:117",
@@ -86,8 +88,28 @@ func TestManager_CloneVm(t *testing.T) {
 		},
 	})
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal(err)
 	}
-	fmt.Println(task)
+	fmt.Printf("create vm %s", ts.Uri)
+	fmt.Printf("task uri  %s", ts.TaskUri)
+
+	tm := task.NewManager(c, "/service/sites/43BC08E8")
+	for {
+		tt, err := tm.Get(ts.TaskUri)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("task status %s", tt.Status)
+		if tt.Status == "success" {
+			break
+		}
+		time.Sleep(5 * time.Second)
+	}
+
+	err = m.DeleteVm(ts.Uri)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("delete vm %s", ts.Uri)
 
 }
