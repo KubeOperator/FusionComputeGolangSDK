@@ -16,7 +16,7 @@ const (
 type Manager interface {
 	ListVm(isTemplate bool) ([]Vm, error)
 	CloneVm(templateUri string, request CloneVmRequest) (string, error)
-	CreateVmCustomization(vmUri string) error
+	DeleteVm(vmUri string) error
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Manager {
@@ -79,6 +79,6 @@ func (m *manager) ListVm(isTemplate bool) ([]Vm, error) {
 	return vms, nil
 }
 
-func (m *manager) CreateVmCustomization(vmUri string) error {
-
+func (m *manager) DeleteVm(vmUri string) error {
+	return nil
 }

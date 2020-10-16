@@ -12,11 +12,11 @@ const (
 	clusterUrl = "<site_uri>/clusters"
 )
 
-type Interface interface {
-	List() ([]Cluster, error)
+type Manager interface {
+	ListCluster() ([]Cluster, error)
 }
 
-func NewManager(client client.FusionComputeClient, siteUri string) Interface {
+func NewManager(client client.FusionComputeClient, siteUri string) Manager {
 	return &manager{client: client, siteUri: siteUri}
 }
 
@@ -25,7 +25,7 @@ type manager struct {
 	siteUri string
 }
 
-func (m *manager) List() ([]Cluster, error) {
+func (m *manager) ListCluster() ([]Cluster, error) {
 	var clusters []Cluster
 	api, err := m.client.GetApiClient()
 	if err != nil {
