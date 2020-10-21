@@ -102,3 +102,8 @@ type CloneVmResponse struct {
 	TaskUrn string `json:"taskUrn,omitempty"`
 	TaskUri string `json:"taskUri,omitempty"`
 }
+
+type DeleteVmResponse struct {
+	TaskUrn string `json:"taskUrn,omitempty"`
+	TaskUri string `json:"taskUri,omitempty"`
+}

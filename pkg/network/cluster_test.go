@@ -27,13 +27,11 @@ func TestManager_List(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		for _, c := range cs {
-			pg, err := cm.ListPortGroup(c.Uri)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(pg)
+		fmt.Println(cs[0].Uri)
+		pg, err := cm.ListPortGroup(cs[0].Uri)
+		if err != nil {
+			log.Fatal(err)
 		}
-		fmt.Println(cs)
+		fmt.Println(pg)
 	}
 }

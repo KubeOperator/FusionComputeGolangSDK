@@ -15,8 +15,9 @@ const (
 
 type Manager interface {
 	ListVm(isTemplate bool) ([]Vm, error)
+	GetVM(vmUri string) (*Vm, error)
 	CloneVm(templateUri string, request CloneVmRequest) (*CloneVmResponse, error)
-	DeleteVm(vmUri string) error
+	DeleteVm(vmUri string) (*DeleteVmResponse, error)
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Manager {
@@ -28,7 +29,6 @@ type manager struct {
 	siteUri string
 }
 
-// return task urn
 func (m *manager) CloneVm(templateUri string, request CloneVmRequest) (*CloneVmResponse, error) {
 	var cloneVmResponse CloneVmResponse
 	api, err := m.client.GetApiClient()
@@ -79,17 +79,45 @@ func (m *manager) ListVm(isTemplate bool) ([]Vm, error) {
 	return vms, nil
 }
 
-func (m *manager) DeleteVm(vmUri string) error {
+func (m *manager) DeleteVm(vmUri string) (*DeleteVmResponse, error) {
+	var deleteVmResponse DeleteVmResponse
 	api, err := m.client.GetApiClient()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	resp, err := api.R().Delete(vmUri)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if !resp.IsSuccess() {
-		return common.FormatHttpError(resp)
+	if resp.IsSuccess() {
+		err := json.Unmarshal(resp.Body(), &deleteVmResponse)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, common.FormatHttpError(resp)
 	}
-	return nil
+	return &deleteVmResponse, nil
+}
+
+func (m *manager) GetVM(vmUri string) (*Vm, error) {
+	var item Vm
+	api, err := m.client.GetApiClient()
+	if err != nil {
+		return nil, err
+	}
+	resp, err := api.R().Get(vmUri)
+
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsSuccess() {
+		err := json.Unmarshal(resp.Body(), &item)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, common.FormatHttpError(resp)
+	}
+	return &item, nil
 }
