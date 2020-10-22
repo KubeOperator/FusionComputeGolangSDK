@@ -10,14 +10,15 @@ import (
 )
 
 const (
-	siteMask    = "<site_uri>"
-	dvSwitchUrl = "<site_uri>/dvswitchs"
-	vmScopeUrl  = "<site_uri>/vms?scope=<resource_urn>"
+	siteMask     = "<site_uri>"
+	dvSwitchUrl  = "<site_uri>/dvswitchs"
+	vmScopeUrl   = "<site_uri>/vms?scope=<resource_urn>"
+	portGroupUrl = "<site_uri>/portgroups"
 )
 
 type Manager interface {
 	ListDVSwitch() ([]DVSwitch, error)
-	ListPortGroup(dvSwitchIdUri string) ([]PortGroup, error)
+	ListPortGroupBySwitch(dvSwitchIdUri string) ([]PortGroup, error)
 	ListPortGroupInUseIp(portGroupUrn string) ([]string, error)
 }
 
@@ -30,7 +31,30 @@ type manager struct {
 	siteUri string
 }
 
-func (m *manager) ListPortGroup(dvSwitchIdUri string) ([]PortGroup, error) {
+func (m *manager) ListPortGroup() ([]PortGroup, error) {
+	var portGroups []PortGroup
+	api, err := m.client.GetApiClient()
+	if err != nil {
+		return nil, err
+	}
+	resp, err := api.R().Get(strings.Replace(portGroupUrl, siteMask, m.siteUri, -1))
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsSuccess() {
+		var listPortGroupResponse ListPortGroupResponse
+		err := json.Unmarshal(resp.Body(), &listPortGroupResponse)
+		if err != nil {
+			return nil, err
+		}
+		portGroups = listPortGroupResponse.PortGroups
+	} else {
+		return nil, common.FormatHttpError(resp)
+	}
+	return portGroups, nil
+}
+
+func (m *manager) ListPortGroupBySwitch(dvSwitchIdUri string) ([]PortGroup, error) {
 
 	var portGroups []PortGroup
 	api, err := m.client.GetApiClient()
