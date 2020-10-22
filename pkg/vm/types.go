@@ -28,6 +28,7 @@ type Vm struct {
 	DrStatus          int    `json:"drStatus,omitempty"`
 	RpoStatus         int    `json:"rpoStatus,omitempty"`
 	InitSyncStatus    int    `json:"initSyncStatus,omitempty"`
+	VmConfig          Config `json:"vmConfig,omitempty"`
 }
 
 type Customization struct {
@@ -94,6 +95,7 @@ type Nic struct {
 	Name         string `json:"name,omitempty"`
 	PortGroupUrn string `json:"portGroupUrn,omitempty"`
 	Mac          string `json:"mac,omitempty"`
+	Ip           string `json:"ip,omitempty"`
 }
 
 type CloneVmResponse struct {
