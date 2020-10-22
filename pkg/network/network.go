@@ -20,6 +20,7 @@ type Manager interface {
 	ListDVSwitch() ([]DVSwitch, error)
 	ListPortGroupBySwitch(dvSwitchIdUri string) ([]PortGroup, error)
 	ListPortGroupInUseIp(portGroupUrn string) ([]string, error)
+	ListPortGroup() ([]PortGroup, error)
 }
 
 func NewManager(client client.FusionComputeClient, siteUri string) Manager {
