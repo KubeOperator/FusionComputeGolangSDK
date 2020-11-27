@@ -48,6 +48,16 @@ func (m *manager) CloneVm(templateUri string, request CloneVmRequest) (*CloneVmR
 		}
 	}
 
+	vm, err := m.GetVM(templateUri)
+	if err != nil {
+		return nil, err
+	}
+	disks := vm.VmConfig.Disks
+	if len(disks) > 0 {
+		if request.Config.Disks[0].QuantityGB < vm.VmConfig.Disks[0].QuantityGB {
+			request.Config.Disks[0].QuantityGB = vm.VmConfig.Disks[0].QuantityGB
+		}
+	}
 	var cloneVmResponse CloneVmResponse
 	api, err := m.client.GetApiClient()
 	if err != nil {
