@@ -109,3 +109,25 @@ type DeleteVmResponse struct {
 	TaskUrn string `json:"taskUrn,omitempty"`
 	TaskUri string `json:"taskUri,omitempty"`
 }
+
+type ImportTemplateRequest struct {
+	Name        string   `json:"name,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Location    string   `json:"location,omitempty"`
+	VmConfig    Config   `json:"vmConfig,omitempty"`
+	OsOptions   OsOption `json:"osOptions,omitempty"`
+	Url         string   `json:"url,omitempty"`
+	Protocol    string   `json:"protocol,omitempty"`
+	IsTemplate  bool     `json:"isTemplate,omitempty"`
+}
+
+type OsOption struct {
+	OsType      string `json:"osType,omitempty"`
+	OsVersion   int    `json:"osVersion,omitempty"`
+	GuestOSName string `json:"guestOsName,omitempty"`
+}
+
+type ImportTemplateResponse struct {
+	TaskUrn string `json:"taskUrn,omitempty"`
+	TaskUri string `json:"taskUri,omitempty"`
+}
